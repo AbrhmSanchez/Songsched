@@ -25,4 +25,31 @@ class song(object):
 
 class songList(object):
     """Store list of songs and useful methods."""
-    pass
+    def __init__(self, songList=[]):
+        self.songList = songList
+
+    @classmethod
+    def from_file(cls, file):
+        """Return songList object from a file."""
+        try:
+            with open(file+'.txt') as f:
+                songList = [song.from_str(line) for line in f]
+                return cls(songList)
+        except Exception as e:
+            print('There was an exception:', e)
+            return cls([])
+
+    def to_file(self, file):
+        """Writes songList to file using the song string representation.
+        
+        The method backs up the file if it already exists.
+        """
+        try:
+            with open(file+'.txt') as f:
+                with open(file+'.BAK', 'w') as b:
+                    b.write(f.read())
+        except:
+            pass
+        with open(file+'.txt', 'w') as f:
+            str_list = [str(song) for song in self.songList]
+            f.write('\n'.join(str_list))
